@@ -1,0 +1,45 @@
+<section class="login-form">
+  <form #f="ngForm" (ngSubmit)="login(f.value)" fxLayout="column" fxLayoutAlign="center center">
+    <mat-form-field *ngIf="isSignup">
+      <input matInput type="email" placeholder="your email" name="email" ngModel email required #email="ngModel"
+        appUniqueEmailValidator>
+      <mat-error *ngIf="email.hasError('unique')">
+        Email cannot be <strong>registered</strong>
+      </mat-error>
+      <mat-error *ngIf="email.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="email.hasError('email')">
+        Email is not <strong>valid</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field *ngIf="!isSignup">
+      <input matInput type="email" placeholder="your email" name="email" ngModel email required #email="ngModel">
+      <mat-error *ngIf="email.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="email.hasError('email')">
+        Email is not <strong>valid</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="password" placeholder="your password" name="password" ngModel required minlength="6" #pwd="ngModel">
+      <mat-error *ngIf="pwd.hasError('required')">
+        Password is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="pwd.hasError('minlength')">
+        Password need <strong>at least 6 characters</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field *ngIf="isSignup">
+      <input matInput type="password" placeholder="enter password again" name="confirmPwd" ngModel required minlength="6"
+        [appConfirmPassword]="pwd.value">
+      <mat-error>
+        two passwords are <strong>not same</strong>
+      </mat-error>
+    </mat-form-field>
+    <button [disabled]="f.invalid" type="sumbit" mat-raised-button color="accent">{{isSignup?'Sign up':'Login'}}</button>
+    <a mat-button color="primary" (click)="toggle()">{{isSignup?'Already have an account? Please Login':'Have no
+      account yet? Please Sign up'}}</a>
+  </form>
+</section>
