@@ -1,9 +1,44 @@
 import { NgModule } from '@angular/core'
-import { MatButtonModule, MatFormFieldModule, MatInputModule } from '@angular/material'
 import { FlexLayoutModule } from '@angular/flex-layout'
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatSidenavModule,
+  MatToolbarModule,
+} from '@angular/material'
+import { MatMomentDateModule } from '@angular/material-moment-adapter'
 
 @NgModule({
-  imports: [FlexLayoutModule, MatButtonModule, MatFormFieldModule, MatInputModule],
-  exports: [FlexLayoutModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    FlexLayoutModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    MatMomentDateModule,
+    MatSidenavModule,
+    MatToolbarModule,
+  ],
+  exports: [
+    FlexLayoutModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMomentDateModule,
+    MatSidenavModule,
+    MatToolbarModule,
+  ],
 })
 export class MatModule {}
