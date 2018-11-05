@@ -8,7 +8,8 @@ import { AuthService } from '../services/auth.service'
   styleUrls: [`./login.component.sass`],
 })
 export class LoginComponent implements OnInit {
-  isSignup = false
+  isSignup = true
+  maxDate = new Date(new Date().setFullYear(new Date().getFullYear() - 18))
 
   constructor(
     private auth: AuthService,

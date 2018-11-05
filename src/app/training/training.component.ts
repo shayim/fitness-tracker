@@ -1,19 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges } from '@angular/core'
 
 @Component({
   selector: 'app-training',
   template: `
-    <p>
-      training works!
-    </p>
+  <nav mat-tab-nav-bar>
+      <a mat-tab-link
+     *ngFor="let link of navLinks"
+     [routerLink]="link.path"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{link.label}}
+  </a>
+  </nav>
+  <router-outlet></router-outlet>
+
+  <app-current-training></app-current-training>
+
   `,
-  styles: []
+  styles: [],
 })
 export class TrainingComponent implements OnInit {
-
-  constructor() { }
+  ongoingTraing = false
+  navLinks: any[]
+  constructor() {}
 
   ngOnInit() {
+    this.navLinks = [
+      { path: '/training/new', label: 'New' },
+      // { path: '/training/current', label: 'Current' },
+      { path: '/training/past', label: 'Past' },
+    ]
   }
-
 }

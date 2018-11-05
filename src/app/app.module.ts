@@ -11,14 +11,14 @@ import { TrainingModule } from './training/training.module'
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    HomeModule,
+    TrainingModule,
+    AuthModule,
+
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatModule,
-
-    HomeModule,
-    TrainingModule,
-    AuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
