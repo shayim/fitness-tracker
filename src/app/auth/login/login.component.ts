@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { map } from 'rxjs/operators'
-import { AuthService } from '../services/auth.service'
+import { Store } from '@ngrx/store'
+import { Login } from '../store/auth-actions'
 
 @Component({
   templateUrl: `./login.component.html`,
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   maxDate = new Date(new Date().setFullYear(new Date().getFullYear() - 18))
 
   constructor(
-    private auth: AuthService,
+    private store: Store<any>,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -24,17 +25,13 @@ export class LoginComponent implements OnInit {
   }
 
   login(inputs) {
-    console.log(inputs)
-
-    if (inputs.email === null || inputs.password === null) {
-      return
-    }
-
     if (this.isSignup) {
-      this.auth.signup(inputs.email, inputs.password)
+      // this.auth.signup(inputs.email, inputs.password, inputs.birthdate.toDate())
     }
 
-    this.auth.login(inputs.email, inputs.password)
+    this.store.dispatch(new Login(inputs.email, inputs.password))
+
+    // this.auth.login(inputs.email, inputs.password)
   }
 
   toggle() {

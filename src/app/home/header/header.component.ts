@@ -9,7 +9,7 @@ import { _MatButtonToggleMixinBase } from '@angular/material'
         <mat-icon>dashboard</mat-icon>
       </button>
 
-      <span class="brand"><a routerLink="/">LOGO</a></span>
+      <div fxFlex fxLayoutAlign.xs="end"><a routerLink="/">LOGO</a></div>
       <ul fxHide.lt-sm fxFlex fxLayout fxLayoutAlign="end" fxLayoutGap="3%">
         <li>
           <a routerLink="/signup" routerLinkActive="active">Sign up</a>

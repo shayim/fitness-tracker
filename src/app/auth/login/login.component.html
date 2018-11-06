@@ -39,9 +39,16 @@
       </mat-error>
     </mat-form-field>
     <mat-form-field *ngIf="isSignup">
-      <input matInput placeholder="your birth date" [matDatepicker]="picker" name="birthdate" ngModel required [max]="maxDate">
+      <input matInput placeholder="your birth date" [matDatepicker]="picker" name="birthdate" required [max]="maxDate"
+        ngModel #birthdate="ngModel">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="birthdate.hasError('required') && !birthdate.hasError('matDatepickerParse')">
+        You need to tell us when you were born, no privacy here.
+      </mat-error>
+      <mat-error *ngIf="birthdate.hasError('matDatepickerParse')">
+        Do you remember when you were born?
+      </mat-error>
     </mat-form-field>
     <mat-checkbox required *ngIf="isSignup" name="agreed" ngModel>Agee to the terms and conditions</mat-checkbox>
     <button [disabled]="f.invalid" type="sumbit" mat-raised-button color="accent">{{isSignup?'Sign up':'Login'}}</button>

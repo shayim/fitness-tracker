@@ -11,6 +11,7 @@ const routes: Routes = [
     path: 'training',
     component: TrainingComponent,
     children: [
+      { path: '', redirectTo: 'new', pathMatch: 'full' },
       { path: 'past', component: PastTrainingComponent },
       { path: 'new', component: NewTrainingComponent },
       { path: 'current', component: CurrentTrainingComponent },

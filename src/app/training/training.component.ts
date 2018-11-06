@@ -1,10 +1,14 @@
-import { Component, OnInit, ViewChild, OnChanges } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
+
+import { Store, select } from '@ngrx/store'
+import { State as TrainingState } from './store/training-reducer'
+import { StopExercises } from './store/training-actions'
 
 @Component({
   selector: 'app-training',
   template: `
   <nav mat-tab-nav-bar>
-      <a mat-tab-link
+      <a mat-tab-link [disabled]="trainingStatus$|async"
      *ngFor="let link of navLinks"
      [routerLink]="link.path"
      routerLinkActive #rla="routerLinkActive"
@@ -12,17 +16,27 @@ import { Component, OnInit, ViewChild, OnChanges } from '@angular/core'
     {{link.label}}
   </a>
   </nav>
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="!(trainingStatus$|async)"></router-outlet>
 
-  <app-current-training></app-current-training>
+  <app-current-training *ngIf="trainingStatus$|async" (stopped)="onStopped()"></app-current-training>
 
   `,
-  styles: [],
+  styles: [
+    `
+      [mat-tab-nav-bar] {
+        margin-bottom: 5%;
+      }
+    `,
+  ],
 })
 export class TrainingComponent implements OnInit {
-  ongoingTraing = false
+  trainingStatus$
   navLinks: any[]
-  constructor() {}
+  constructor(private store: Store<any>) {
+    this.trainingStatus$ = this.store
+      .select(state => state.training.training)
+      .pipe(select((state: TrainingState) => state.trainingStatus))
+  }
 
   ngOnInit() {
     this.navLinks = [
@@ -30,5 +44,9 @@ export class TrainingComponent implements OnInit {
       // { path: '/training/current', label: 'Current' },
       { path: '/training/past', label: 'Past' },
     ]
+  }
+
+  onStopped() {
+    this.store.dispatch(new StopExercises())
   }
 }

@@ -1,10 +1,12 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
+import { Store } from '@ngrx/store'
+import { StartExercises } from '../store/training-actions'
 
 @Component({
   selector: 'app-new-training',
   template: `
   <section fxLayout fxLayoutAlign="center cennter">
-    <mat-card fxFlex.lt-sm="90%" fxFlex="60%" fxLayout="column" fxLayoutAlign="center center">
+    <mat-card fxFlex.lt-sm="100%" fxFlex="60%" fxLayout="column" fxLayoutAlign="center center">
       <mat-card-title>Time to start a workout</mat-card-title>
       <mat-card-content>
         <mat-form-field>
@@ -24,15 +26,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core'
   styles: [``],
 })
 export class NewTrainingComponent implements OnInit {
-  @Output()
-  trainingStarted = new EventEmitter()
-
-  @Output()
-  trainingPaused = new EventEmitter()
-
   exercises: any[]
 
-  constructor() {}
+  constructor(private store: Store<any>) {}
 
   ngOnInit() {
     this.exercises = [
@@ -44,6 +40,6 @@ export class NewTrainingComponent implements OnInit {
   }
 
   start() {
-    this.trainingStarted.emit()
+    this.store.dispatch(new StartExercises())
   }
 }
