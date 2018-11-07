@@ -1,9 +1,10 @@
 import { Action } from '@ngrx/store'
-import { IExercise } from './../models/exercise'
+import { Exercise } from './../models/exercise'
 
 export enum TrainingActionTypes {
   Add = '[Traing] Add New Exercise',
   Start = '[Training] Start Exercises',
+  Completed = '[Training] Completed Exercises',
   Stop = '[Training] Stop Exercises',
   Pause = '[Training] Pause Exercises',
   Load = '[Training] Load Exercises',
@@ -13,11 +14,16 @@ export enum TrainingActionTypes {
 
 export class AddNewExercise implements Action {
   readonly type = TrainingActionTypes.Add
-  constructor(public exercise: IExercise) {}
+  constructor(public exercise: Exercise) {}
 }
 
 export class StartExercises implements Action {
   readonly type = TrainingActionTypes.Start
+}
+
+export class CompletedExercise implements Action {
+  readonly type = TrainingActionTypes.Completed
+  constructor(public completedExercise: Exercise) {}
 }
 
 export class StopExercises implements Action {
@@ -34,7 +40,7 @@ export class Load implements Action {
 
 export class LoadSuccess implements Action {
   readonly type = TrainingActionTypes.LoadSuccess
-  constructor(public exercises: IExercise[]) {}
+  constructor(public exercises: Exercise[]) {}
 }
 
 export class LoadFailue implements Action {
@@ -44,6 +50,7 @@ export class LoadFailue implements Action {
 export type TrainingActions =
   | AddNewExercise
   | StartExercises
+  | CompletedExercise
   | StopExercises
   | PauseExercises
   | Load

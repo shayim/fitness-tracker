@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core'
-
 import { Store } from '@ngrx/store'
-import { selectTrainingStatus } from './store/training-reducer'
-import { StopExercises } from './store/training-actions'
+import { Observable } from 'rxjs'
+import { filter, map } from 'rxjs/operators'
+import { Exercise } from './models/exercise'
+import { CompletedExercise, StopExercises } from './store/training-actions'
+import { selectCurrentTraining, selectTrainingStatus } from './store/training-reducer'
 
 @Component({
   selector: 'app-training',
@@ -18,7 +20,12 @@ import { StopExercises } from './store/training-actions'
   </nav>
   <router-outlet *ngIf="!(trainingStatus$|async)"></router-outlet>
 
-  <app-current-training *ngIf="trainingStatus$|async" (stopped)="onStopped()"></app-current-training>
+  <app-current-training
+    [currentExes]="currentExes$|async"
+    *ngIf="trainingStatus$|async"
+    (stopped)="onStopped()"
+    (completed)="onCompleted($event)">
+  </app-current-training>
 
   `,
   styles: [
@@ -30,10 +37,16 @@ import { StopExercises } from './store/training-actions'
   ],
 })
 export class TrainingComponent implements OnInit {
-  trainingStatus$
+  currentExes$: Observable<Exercise>
+  trainingStatus$: Observable<boolean>
   navLinks: any[]
+
   constructor(private store: Store<any>) {
     this.trainingStatus$ = this.store.select(selectTrainingStatus)
+    this.currentExes$ = this.store.select(selectCurrentTraining).pipe(
+      filter(exes => exes.length !== 0),
+      map(exes => exes[0])
+    )
   }
 
   ngOnInit() {
@@ -46,5 +59,9 @@ export class TrainingComponent implements OnInit {
 
   onStopped() {
     this.store.dispatch(new StopExercises())
+  }
+
+  onCompleted(exe) {
+    this.store.dispatch(new CompletedExercise(exe))
   }
 }

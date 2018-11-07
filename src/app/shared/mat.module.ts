@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import {
   MatButtonModule,
+  MatCardModule,
   MatCheckboxModule,
   MatDatepickerModule,
   MatDialogModule,
@@ -9,12 +10,12 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
   MatSidenavModule,
+  MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatCardModule,
-  MatSelectModule,
-  MatProgressSpinnerModule,
 } from '@angular/material'
 import { MatMomentDateModule } from '@angular/material-moment-adapter'
 
@@ -34,6 +35,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter'
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSidenavModule,
+    MatTableModule,
     MatTabsModule,
     MatToolbarModule,
   ],
@@ -52,6 +54,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter'
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSidenavModule,
+    MatTableModule,
     MatTabsModule,
     MatToolbarModule,
   ],

@@ -1,12 +1,11 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store'
-
-import { IExercise } from '../models/exercise'
+import { createFeatureSelector, createSelector } from '@ngrx/store'
+import { Exercise } from '../models/exercise'
 import { TrainingActions, TrainingActionTypes } from './training-actions'
 
 export interface State {
-  exercises: IExercise[]
-  current: IExercise[]
-  past: IExercise[]
+  exercises: Exercise[]
+  current: Exercise[]
+  past: Exercise[]
   trainingStatus: boolean
 }
 
@@ -26,11 +25,18 @@ export const reducer = function(
       return {
         ...state,
         current: [...state.current, action.exercise],
+        exercises: state.exercises.filter(e => e.id !== action.exercise.id),
       }
     case TrainingActionTypes.Start:
       return {
         ...state,
         trainingStatus: true,
+      }
+    case TrainingActionTypes.Completed:
+      return {
+        ...state,
+        past: [...state.past, action.completedExercise],
+        current: state.current.filter(e => e.id !== action.completedExercise.id),
       }
     case TrainingActionTypes.Stop:
       return {

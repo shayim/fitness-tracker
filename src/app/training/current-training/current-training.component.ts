@@ -1,19 +1,21 @@
 import {
   Component,
+  EventEmitter,
+  Input,
   OnInit,
   Output,
-  EventEmitter,
   TemplateRef,
   ViewChild,
 } from '@angular/core'
 import { MatDialog } from '@angular/material'
+import { Exercise } from '../models/exercise'
 
 @Component({
   selector: 'app-current-training',
   template: `
    <section fxLayout="column" fxLayoutAlign="center center">
       <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
-      <h1>{{progress}}%</h1>
+      <h1>{{currentExes.name}}</h1>
       <p>Keep on going, You can do it!</p>
       <button mat-raised-button (click)="stop()">Stop</button>
    </section>
@@ -32,6 +34,12 @@ export class CurrentTrainingComponent implements OnInit {
   timer: any
   progress = 0
 
+  @Input()
+  currentExes: Exercise
+
+  @Output()
+  completed = new EventEmitter<Exercise>()
+
   @Output()
   stopped = new EventEmitter<boolean>()
 
@@ -45,13 +53,23 @@ export class CurrentTrainingComponent implements OnInit {
   }
 
   private startTimer() {
+    const step = this.currentExes.duration * 10
     this.timer = setInterval(() => {
-      this.progress += 5
+      this.progress += 1
       if (this.progress >= 100) {
         clearInterval(this.timer)
-        this.stopped.emit(true)
+        this.completed.emit({
+          ...this.currentExes,
+          date: new Date(),
+          state: 'completed',
+        })
+
+        if (this.currentExes) {
+          this.progress = 0
+          this.startTimer()
+        }
       }
-    }, 500)
+    }, step)
   }
 
   stop() {
