@@ -1,23 +1,23 @@
-import { Component, Output, EventEmitter } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 
 @Component({
   selector: 'app-sidenav',
   template: `
      <mat-nav-list (click)="toggle()">
-      <a mat-list-item routerLink="/signup" routerLinkActive="active">
+      <a  *ngIf="!user" mat-list-item routerLink="/signup" routerLinkActive="active">
         <mat-icon>face</mat-icon>
         <span>Sign up</span>
       </a>
-      <a mat-list-item routerLink="/login" routerLinkActive="active">
+      <a *ngIf="!user" mat-list-item routerLink="/login" routerLinkActive="active">
         <mat-icon>cast_connected</mat-icon>
         <span>Login</span>
       </a>
-      <a mat-list-item routerLink="/training" routerLinkActive="active">
+      <a *ngIf="user" mat-list-item routerLink="/training" routerLinkActive="active">
         <mat-icon>accessibility_new</mat-icon>
         <span>Training</span>
       </a>
-      <mat-list-item>
-        <button mat-icon-button>
+      <mat-list-item *ngIf="user">
+        <button mat-icon-button (click)="logout()">
           <mat-icon>eject</mat-icon>
           <span>Logout</span>
         </button>
@@ -40,10 +40,20 @@ import { Component, Output, EventEmitter } from '@angular/core'
   ],
 })
 export class SidenavComponent {
+  @Input()
+  user: any
+
+  @Output()
+  loggedout = new EventEmitter()
+
   @Output()
   toggleSidenav = new EventEmitter()
 
   toggle() {
     this.toggleSidenav.emit()
+  }
+
+  logout() {
+    this.loggedout.emit()
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core'
-import { Store } from '@ngrx/store'
-import { StartExercises } from '../store/training-actions'
+import { select, Store } from '@ngrx/store'
+import { Observable } from 'rxjs'
+import { IExercise } from '../models/exercise'
+import { Load, StartExercises } from '../store/training-actions'
 
 @Component({
   selector: 'app-new-training',
@@ -11,7 +13,7 @@ import { StartExercises } from '../store/training-actions'
       <mat-card-content>
         <mat-form-field>
           <mat-select placeholder="choose next exercise">
-            <mat-option *ngFor="let exercise of exercises" [value]="exercise.value">{{exercise.name}}</mat-option>
+            <mat-option *ngFor="let exercise of (exercises$ | async)" [value]="exercise.name">{{exercise.name}}</mat-option>
           </mat-select>
         </mat-form-field>
       </mat-card-content>
@@ -26,17 +28,16 @@ import { StartExercises } from '../store/training-actions'
   styles: [``],
 })
 export class NewTrainingComponent implements OnInit {
-  exercises: any[]
+  exercises$: Observable<IExercise[]>
 
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.exercises = [
-      { name: 'Crunches', value: 'crunches' },
-      { name: 'Touch Toes', value: 'touch-toes' },
-      { name: 'Side Lunges', value: 'side-lunges' },
-      { name: 'Burpees', value: 'burpees' },
-    ]
+    this.exercises$ = this.store
+      .select('training')
+      .pipe(select(s => s.training.exercises))
+
+    this.store.dispatch(new Load())
   }
 
   start() {

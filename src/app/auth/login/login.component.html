@@ -1,5 +1,5 @@
 <section class="login-form">
-  <form #f="ngForm" (ngSubmit)="login(f.value)" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+  <form #f="ngForm" (ngSubmit)="login(f.value)" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="3%">
     <mat-form-field *ngIf="isSignup">
       <input matInput type="email" placeholder="your email" name="email" ngModel email required #email="ngModel"
         appUniqueEmailValidator>

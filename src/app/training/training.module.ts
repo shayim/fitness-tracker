@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { StoreModule, ActionReducerMap } from '@ngrx/store'
-
+import { HttpClientModule } from '@angular/common/http'
+import { NgModule } from '@angular/core'
+import { EffectsModule } from '@ngrx/effects'
+import { ActionReducerMap, StoreModule } from '@ngrx/store'
 import { MatModule } from './../shared/mat.module'
-import { TrainingRoutingModule } from './training.routing.module'
-
-import { TrainingComponent } from './training.component'
 import { CurrentTrainingComponent } from './current-training/current-training.component'
-import { PastTrainingComponent } from './past-training/past-training.component'
 import { NewTrainingComponent } from './new-training/new-training.component'
-
+import { PastTrainingComponent } from './past-training/past-training.component'
+import { TrainingEffects } from './store/training-effects'
 import { reducer as TrainingReducer } from './store/training-reducer'
+import { TrainingComponent } from './training.component'
+import { TrainingRoutingModule } from './training.routing.module'
 
 const reducers: ActionReducerMap<any> = {
   training: TrainingReducer,
@@ -25,7 +25,9 @@ const reducers: ActionReducerMap<any> = {
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     StoreModule.forFeature('training', reducers),
+    EffectsModule.forFeature([TrainingEffects]),
     MatModule,
     TrainingRoutingModule,
   ],

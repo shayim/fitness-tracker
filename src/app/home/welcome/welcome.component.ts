@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core'
 @Component({
   selector: 'app-welcome',
   template: `
-    <div class="welcome" fxLayout="column" fxLayout.md="row" fxLayoutAlign="center center" fxLayoutGap="5%">
+    <div class="welcome" fxLayout="column" fxLayout.gt-lg="row" fxLayoutAlign="center center" fxLayoutGap="5%">
       <section *ngFor="let message of messages">
         <h1>{{message.title | uppercase}}</h1>
         <p>{{message.message}}</p>

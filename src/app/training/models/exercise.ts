@@ -1,5 +1,7 @@
 export interface IExercise {
+  id: string
   name: string
-  value: string
-  timeSpan: number
+  duration: number
+  date?: Date
+  state?: 'completed' | 'cancelled' | null
 }

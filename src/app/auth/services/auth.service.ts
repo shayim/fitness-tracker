@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { of, Observable } from 'rxjs'
+import { Injectable } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { User } from '../models/user.model'
-import { map, catchError } from 'rxjs/operators'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -10,10 +10,8 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<any> {
-    console.log(email, password)
     return this.http.post('api/users/login', { email, password }).pipe(
       map(user => {
-        console.log(user)
         // TODO: hook up backend
 
         this._user = {
@@ -21,18 +19,22 @@ export class AuthService {
           userId: Math.round(Math.random() * 10000000).toString(),
         }
         return this._user
-      }),
-      catchError(() => {
-        console.log('I got here')
-        return of(null)
       })
     )
   }
   signup(email: string, password: string, birthdate: Date) {
-    this._user = {
-      email: email,
-      userId: Math.round(Math.random() * 10000000).toString(),
-    }
+    return this.http.post('api/users/signup', { email, password, birthdate }).pipe(
+      map(user => {
+        // TODO: hook up backend
+
+        this._user = {
+          email: email,
+          userId: Math.round(Math.random() * 10000000).toString(),
+        }
+
+        return this._user
+      })
+    )
   }
 
   logout() {
@@ -46,13 +48,5 @@ export class AuthService {
       return of(false)
     }
     return of(true)
-  }
-
-  get user() {
-    return this.user
-  }
-
-  get isAuth() {
-    return this._user !== null
   }
 }

@@ -2,12 +2,14 @@ import { IExercise } from '../models/exercise'
 import { TrainingActions, TrainingActionTypes } from './training-actions'
 
 export interface State {
+  exercises: IExercise[]
   current: IExercise[]
   past: IExercise[]
   trainingStatus: boolean
 }
 
 export const INITIAL_STATE: State = {
+  exercises: [],
   current: [],
   past: [],
   trainingStatus: false,
@@ -39,6 +41,11 @@ export const reducer = function(
       return {
         ...state,
         trainingStatus: false,
+      }
+    case TrainingActionTypes.LoadSuccess:
+      return {
+        ...state,
+        exercises: [...action.exercises],
       }
     default:
       return state

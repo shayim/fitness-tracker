@@ -1,9 +1,9 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
-    <app-sidenav (toggleSidenav)="sidenav.close()"></app-sidenav>
+    <app-sidenav (loggedout)="logout()" (toggleSidenav)="sidenav.close()" [user]="user$|async"></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-header (toggleSidenav)=sidenav.toggle()></app-header>
+    <app-header (loggedout)="logout()" (toggleSidenav)=sidenav.toggle() [user]="user$|async"></app-header>
     <main>
       <router-outlet></router-outlet>
     </main>

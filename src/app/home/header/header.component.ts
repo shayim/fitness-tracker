@@ -1,5 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core'
-import { _MatButtonToggleMixinBase } from '@angular/material'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 
 @Component({
   selector: 'app-header',
@@ -11,17 +10,17 @@ import { _MatButtonToggleMixinBase } from '@angular/material'
 
       <div fxFlex fxLayoutAlign.xs="end"><a routerLink="/">LOGO</a></div>
       <ul fxHide.lt-sm fxFlex fxLayout fxLayoutAlign="end" fxLayoutGap="3%">
-        <li>
+        <li *ngIf="!user">
           <a routerLink="/signup" routerLinkActive="active">Sign up</a>
         </li>
-        <li>
+        <li *ngIf="!user">
           <a routerLink="/login" routerLinkActive="active">Login</a>
         </li>
-        <li>
+        <li *ngIf="user">
           <a routerLink="/training" routerLinkActive="active">Training</a>
         </li>
-        <li>
-          <button mat-button>Logout</button>
+        <li *ngIf="user">
+          <button mat-button (click)="logout()">Logout</button>
         </li>
       </ul>
 
@@ -45,10 +44,20 @@ import { _MatButtonToggleMixinBase } from '@angular/material'
   ],
 })
 export class HeaderComponent {
+  @Input()
+  user: any
+
   @Output()
   toggleSidenav = new EventEmitter()
 
+  @Output()
+  loggedout = new EventEmitter()
+
   toggle() {
     this.toggleSidenav.emit()
+  }
+
+  logout() {
+    this.loggedout.emit()
   }
 }
