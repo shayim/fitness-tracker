@@ -12,7 +12,12 @@ export const INITIAL_STATE: State = {
 export const reducer = function(state: State = INITIAL_STATE, action: AuthActions) {
   switch (action.type) {
     case AuthActionTypes.LoginSuccess:
-      const user: User = { email: action.email, userId: action.userId }
+      const user: User = {
+        email: action.email,
+        userId: action.userId,
+        token: action.token,
+        expiredAt: action.expiredAt,
+      }
       return {
         user: user,
       }

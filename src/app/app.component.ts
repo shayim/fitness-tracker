@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { select, Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
-import { Logout } from './auth/store/auth-actions'
+import { Logout, GetAuth } from './auth/store/auth-actions'
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ import { Logout } from './auth/store/auth-actions'
 export class AppComponent {
   user$: Observable<any>
   constructor(private store: Store<any>) {
+    this.store.dispatch(new GetAuth())
     this.user$ = this.store.select('auth').pipe(select(state => state.auth.user))
   }
 

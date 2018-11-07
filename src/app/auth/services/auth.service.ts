@@ -6,19 +6,31 @@ import { User } from '../models/user.model'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _user: User
+  private localStorageUserKey = '_user'
+
+  private mockUser = {
+    email: 'a@a',
+    userId: Math.round(Math.random() * 10000000).toString(),
+    token: 'eyabcdefgh',
+    expiredAt: new Date().setMinutes(new Date().getMinutes() + 30),
+  }
+
+  // private _user: User
+
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<any> {
+    if (this.user) {
+      return of(this.user)
+    }
+
     return this.http.post('api/users/login', { email, password }).pipe(
       map(user => {
         // TODO: hook up backend
 
-        this._user = {
-          email: email,
-          userId: Math.round(Math.random() * 10000000).toString(),
-        }
-        return this._user
+        this.validateAndSave(this.mockUser)
+
+        return this.mockUser
       })
     )
   }
@@ -27,18 +39,15 @@ export class AuthService {
       map(user => {
         // TODO: hook up backend
 
-        this._user = {
-          email: email,
-          userId: Math.round(Math.random() * 10000000).toString(),
-        }
+        this.validateAndSave(this.mockUser)
 
-        return this._user
+        return this.mockUser
       })
     )
   }
 
   logout() {
-    this._user = null
+    localStorage.removeItem(this.localStorageUserKey)
   }
 
   checkUniqueEmail(email: string): Observable<boolean> {
@@ -48,5 +57,34 @@ export class AuthService {
       return of(false)
     }
     return of(true)
+  }
+
+  private validateAndSave(user: User) {
+    if (user.userId && user.email && user.token && user.expiredAt) {
+      localStorage.setItem(this.localStorageUserKey, JSON.stringify(user))
+    } else {
+      throw new Error('invalidate user')
+    }
+  }
+
+  get user() {
+    const userJson = localStorage.getItem(this.localStorageUserKey)
+
+    if (userJson !== null) {
+      try {
+        const user: any = JSON.parse(userJson)
+        if (+user.expiredAt > Date.now()) {
+          return { ...user, expiredAt: +user.expiredAt }
+        } else {
+          localStorage.removeItem(this.localStorageUserKey)
+        }
+      } catch (error) {
+        console.log(error)
+        localStorage.removeItem(this.localStorageUserKey)
+        return null
+      }
+    }
+
+    return null
   }
 }

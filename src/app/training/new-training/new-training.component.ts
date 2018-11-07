@@ -18,14 +18,34 @@ import { Load, StartExercises } from '../store/training-actions'
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-icon-button (click)="start()">
-          <mat-icon>play_circle_filled</mat-icon>
+        <button mat-icon-button (click)="add()">
+          <mat-icon>add</mat-icon>
         </button>
       </mat-card-actions>
     </mat-card>
   </section>
+  <section>
+    <mat-card>
+      <mat-card-title>Current Exercises List</mat-card-title>
+      <mat-list role="list">
+        <mat-list-item role="listitem">
+          <button mat-icon-button (click)="start()" fxFlex fxFlexAlign="center">
+            <mat-icon>play_circle_filled</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-list-item role="listitem">Item 2</mat-list-item>
+        <mat-list-item role="listitem">Item 3</mat-list-item>
+        </mat-list>
+    </mat-card>
+  </section>
   `,
-  styles: [``],
+  styles: [
+    `
+      mat-card {
+        margin-bottom: 2%;
+      }
+    `,
+  ],
 })
 export class NewTrainingComponent implements OnInit {
   exercises$: Observable<IExercise[]>
@@ -39,6 +59,8 @@ export class NewTrainingComponent implements OnInit {
 
     this.store.dispatch(new Load())
   }
+
+  add() {}
 
   start() {
     this.store.dispatch(new StartExercises())
