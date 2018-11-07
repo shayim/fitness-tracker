@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 
-import { Store, select } from '@ngrx/store'
-import { State as TrainingState } from './store/training-reducer'
+import { Store } from '@ngrx/store'
+import { selectTrainingStatus } from './store/training-reducer'
 import { StopExercises } from './store/training-actions'
 
 @Component({
@@ -33,9 +33,7 @@ export class TrainingComponent implements OnInit {
   trainingStatus$
   navLinks: any[]
   constructor(private store: Store<any>) {
-    this.trainingStatus$ = this.store
-      .select(state => state.training.training)
-      .pipe(select((state: TrainingState) => state.trainingStatus))
+    this.trainingStatus$ = this.store.select(selectTrainingStatus)
   }
 
   ngOnInit() {

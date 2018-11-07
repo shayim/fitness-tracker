@@ -1,3 +1,4 @@
+import { selectUser } from './../store/auth-reducer'
 import { Injectable } from '@angular/core'
 import {
   ActivatedRouteSnapshot,
@@ -17,8 +18,7 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.store.select('auth').pipe(
-      select(s => s.auth.user),
+    return this.store.select(selectUser).pipe(
       map((user: any) => {
         if (user === null) {
           this.router.navigate(['/'])

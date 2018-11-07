@@ -30,8 +30,6 @@ export class LoginComponent implements OnInit {
     }
 
     this.store.dispatch(new Login(inputs.email, inputs.password))
-
-    // this.auth.login(inputs.email, inputs.password)
   }
 
   toggle() {

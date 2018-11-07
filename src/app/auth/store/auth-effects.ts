@@ -6,13 +6,7 @@ import { Observable, of } from 'rxjs'
 import { catchError, map, switchMap, tap, filter } from 'rxjs/operators'
 import { User } from '../models/user.model'
 import { AuthService } from '../services/auth.service'
-import {
-  AuthActionTypes,
-  Login,
-  LoginFailure,
-  LoginSuccess,
-  GetAuth,
-} from './auth-actions'
+import { AuthActionTypes, Login, LoginFailure, LoginSuccess } from './auth-actions'
 
 @Injectable()
 export class AuthEffects {

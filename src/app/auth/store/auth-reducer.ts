@@ -1,3 +1,5 @@
+import { createSelector, createFeatureSelector } from '@ngrx/store'
+
 import { AuthActions, AuthActionTypes } from './auth-actions'
 import { User } from '../models/user.model'
 
@@ -31,3 +33,6 @@ export const reducer = function(state: State = INITIAL_STATE, action: AuthAction
       return state
   }
 }
+
+export const selectUserState = createFeatureSelector<any, State>('auth')
+export const selectUser = createSelector(selectUserState, (state: State) => state.user)

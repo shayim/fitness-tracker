@@ -1,3 +1,5 @@
+import { createSelector, createFeatureSelector } from '@ngrx/store'
+
 import { IExercise } from '../models/exercise'
 import { TrainingActions, TrainingActionTypes } from './training-actions'
 
@@ -51,3 +53,24 @@ export const reducer = function(
       return state
   }
 }
+
+const selectTrainingState = createFeatureSelector<any, State>('training')
+
+export const selectTrainingExercises = createSelector(
+  selectTrainingState,
+  (state: State) => state.exercises
+)
+
+export const selectCurrentTraining = createSelector(
+  selectTrainingState,
+  (state: State) => state.current
+)
+export const selectPastTraining = createSelector(
+  selectTrainingState,
+  (state: State) => state.past
+)
+
+export const selectTrainingStatus = createSelector(
+  selectTrainingState,
+  (state: State) => state.trainingStatus
+)

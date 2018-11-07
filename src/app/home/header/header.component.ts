@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
       </button>
 
       <div fxFlex fxLayoutAlign.xs="end"><a routerLink="/">LOGO</a></div>
-      <ul fxHide.lt-sm fxFlex fxLayout fxLayoutAlign="end" fxLayoutGap="3%">
+      <ul fxHide.lt-sm fxFlex fxLayout fxLayoutAlign="end" fxLayoutGap="10%">
         <li *ngIf="!user">
           <a routerLink="/signup" routerLinkActive="active">Sign up</a>
         </li>
@@ -38,7 +38,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
       }
 
       .active {
-        color: red;
+        padding: 7% 20% 10%;
+        border: 2px dashed white;
+        border-radius: 10px;
       }
     `,
   ],

@@ -11,6 +11,7 @@ import { TrainingEffects } from './store/training-effects'
 import { reducer as TrainingReducer } from './store/training-reducer'
 import { TrainingComponent } from './training.component'
 import { TrainingRoutingModule } from './training.routing.module'
+import { FormsModule } from '@angular/forms'
 
 const reducers: ActionReducerMap<any> = {
   training: TrainingReducer,
@@ -26,7 +27,8 @@ const reducers: ActionReducerMap<any> = {
   imports: [
     CommonModule,
     HttpClientModule,
-    StoreModule.forFeature('training', reducers),
+    FormsModule,
+    StoreModule.forFeature('training', TrainingReducer),
     EffectsModule.forFeature([TrainingEffects]),
     MatModule,
     TrainingRoutingModule,
