@@ -6,7 +6,9 @@ import {
   Output,
   TemplateRef,
   ViewChild,
+  OnChanges,
 } from '@angular/core'
+
 import { MatDialog } from '@angular/material'
 import { Exercise } from '../models/exercise'
 
@@ -14,8 +16,8 @@ import { Exercise } from '../models/exercise'
   selector: 'app-current-training',
   template: `
    <section fxLayout="column" fxLayoutAlign="center center">
-      <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
-      <h1>{{currentExes.name}}</h1>
+      <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner> {{progress}}%
+      <h1>{{currentExes?.name}}</h1>
       <p>Keep on going, You can do it!</p>
       <button mat-raised-button (click)="stop()">Stop</button>
    </section>
@@ -30,7 +32,7 @@ import { Exercise } from '../models/exercise'
   `,
   styles: [],
 })
-export class CurrentTrainingComponent implements OnInit {
+export class CurrentTrainingComponent implements OnInit, OnChanges {
   timer: any
   progress = 0
 
@@ -41,14 +43,16 @@ export class CurrentTrainingComponent implements OnInit {
   completed = new EventEmitter<Exercise>()
 
   @Output()
-  stopped = new EventEmitter<boolean>()
+  stopped = new EventEmitter<number>()
 
   @ViewChild('templ')
   templ: TemplateRef<any>
 
   constructor(private dialog: MatDialog) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ngOnChanges() {
     this.startTimer()
   }
 
@@ -58,16 +62,13 @@ export class CurrentTrainingComponent implements OnInit {
       this.progress += 1
       if (this.progress >= 100) {
         clearInterval(this.timer)
+        this.progress = 0
+
         this.completed.emit({
           ...this.currentExes,
           date: new Date(),
           state: 'completed',
         })
-
-        if (this.currentExes) {
-          this.progress = 0
-          this.startTimer()
-        }
       }
     }, step)
   }
@@ -79,7 +80,7 @@ export class CurrentTrainingComponent implements OnInit {
       .afterClosed()
       .subscribe(result => {
         if (result) {
-          this.stopped.emit(true)
+          this.stopped.emit(this.progress)
         } else {
           this.startTimer()
         }

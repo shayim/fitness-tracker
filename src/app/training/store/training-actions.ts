@@ -28,6 +28,7 @@ export class CompletedExercise implements Action {
 
 export class StopExercises implements Action {
   readonly type = TrainingActionTypes.Stop
+  constructor(public progress: number) {}
 }
 
 export class PauseExercises implements Action {

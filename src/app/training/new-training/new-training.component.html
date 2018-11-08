@@ -16,17 +16,17 @@
 
 </section>
 <section fxLayout fxLayoutAlign="center">
-  <mat-card fxFlex.lt-sm="100%" fxLayout="column" fxLayoutAlign="center center">
+  <mat-card fxFlex.lt-sm="100%" fxFlex="60%" fxLayout="column" fxLayoutAlign="center center">
     <mat-card-title>New Exercises List</mat-card-title>
     <mat-list role="list" fxLayout="column" fxLayoutAlign="center center">
       <mat-list-item role="listitem" fxFlex fxFlexAlign="center center">
-        <button [disabled]="(currentExes$ | async).length===0" mat-mini-fab (click)="start()">
+        <button [disabled]="(newExes$ | async).length===0" mat-mini-fab (click)="start()">
           <mat-icon>play_arrow</mat-icon>
         </button>
       </mat-list-item>
     </mat-list>
     <mat-list>
-      <mat-list-item *ngFor="let exe of (currentExes$ | async)" role="listitem">
+      <mat-list-item *ngFor="let exe of (newExes$ | async)" role="listitem">
         <div>{{exe.name}}</div>
       </mat-list-item>
     </mat-list>

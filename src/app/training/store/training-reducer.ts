@@ -4,14 +4,16 @@ import { TrainingActions, TrainingActionTypes } from './training-actions'
 
 export interface State {
   exercises: Exercise[]
-  current: Exercise[]
+  current: Exercise
+  new: Exercise[]
   past: Exercise[]
   trainingStatus: boolean
 }
 
 export const INITIAL_STATE: State = {
   exercises: [],
-  current: [],
+  current: undefined,
+  new: [],
   past: [],
   trainingStatus: false,
 }
@@ -24,27 +26,56 @@ export const reducer = function(
     case TrainingActionTypes.Add:
       return {
         ...state,
-        current: [...state.current, action.exercise],
+        new: [...state.new, action.exercise],
         exercises: state.exercises.filter(e => e.id !== action.exercise.id),
       }
     case TrainingActionTypes.Start:
       return {
         ...state,
+        current: { ...state.new[0] },
+        new: state.new.slice(1),
         trainingStatus: true,
       }
     case TrainingActionTypes.Completed:
       return {
         ...state,
+        current: undefined,
         past: [...state.past, action.completedExercise],
-        current: state.current.filter(e => e.id !== action.completedExercise.id),
-      }
-    case TrainingActionTypes.Stop:
-      return {
-        ...state,
-        current: [],
-        past: [...state.past, ...state.current],
         trainingStatus: false,
       }
+    case TrainingActionTypes.Stop:
+      const newState: State = {
+        ...state,
+        trainingStatus: false,
+        new: [],
+        current: undefined,
+      }
+      if (state.current) {
+        newState.past = [
+          ...newState.past,
+          {
+            ...state.current,
+            state: 'cancelled',
+            duration: (state.current.duration * action.progress) / 100,
+            calories: (state.current.calories * action.progress) / 100,
+            date: new Date(),
+          },
+        ]
+      }
+      if (state.new.length > 0) {
+        newState.past = [
+          ...newState.past,
+          ...[...state.new].map(
+            e =>
+              ({
+                ...e,
+                calories: 0,
+                state: 'cancelled',
+              } as Exercise)
+          ),
+        ]
+      }
+      return newState
     case TrainingActionTypes.Pause:
       return {
         ...state,
@@ -70,6 +101,11 @@ export const selectTrainingExercises = createSelector(
 export const selectCurrentTraining = createSelector(
   selectTrainingState,
   (state: State) => state.current
+)
+
+export const selectNewTraining = createSelector(
+  selectTrainingState,
+  (state: State) => state.new
 )
 export const selectPastTraining = createSelector(
   selectTrainingState,

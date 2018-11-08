@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 import { Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
 import { Exercise } from './models/exercise'
 import { CompletedExercise, StopExercises } from './store/training-actions'
-import { selectCurrentTraining, selectTrainingStatus } from './store/training-reducer'
+import { selectTrainingStatus, selectCurrentTraining } from './store/training-reducer'
 
 @Component({
   selector: 'app-training',
@@ -23,7 +22,7 @@ import { selectCurrentTraining, selectTrainingStatus } from './store/training-re
   <app-current-training
     [currentExes]="currentExes$|async"
     *ngIf="trainingStatus$|async"
-    (stopped)="onStopped()"
+    (stopped)="onStopped($event)"
     (completed)="onCompleted($event)">
   </app-current-training>
 
@@ -43,10 +42,7 @@ export class TrainingComponent implements OnInit {
 
   constructor(private store: Store<any>) {
     this.trainingStatus$ = this.store.select(selectTrainingStatus)
-    this.currentExes$ = this.store.select(selectCurrentTraining).pipe(
-      filter(exes => exes.length !== 0),
-      map(exes => exes[0])
-    )
+    this.currentExes$ = this.store.select(selectCurrentTraining)
   }
 
   ngOnInit() {
@@ -57,11 +53,11 @@ export class TrainingComponent implements OnInit {
     ]
   }
 
-  onStopped() {
-    this.store.dispatch(new StopExercises())
+  onStopped(progress: number) {
+    this.store.dispatch(new StopExercises(progress))
   }
 
-  onCompleted(exe) {
-    this.store.dispatch(new CompletedExercise(exe))
+  onCompleted(exercise: Exercise) {
+    this.store.dispatch(new CompletedExercise(exercise))
   }
 }

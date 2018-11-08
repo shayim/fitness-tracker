@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
 import { Exercise } from '../models/exercise'
 import { AddNewExercise, Load, StartExercises } from '../store/training-actions'
-import { selectCurrentTraining, selectTrainingExercises } from '../store/training-reducer'
+import { selectNewTraining, selectTrainingExercises } from '../store/training-reducer'
 
 @Component({
   selector: 'app-new-training',
@@ -19,15 +19,14 @@ import { selectCurrentTraining, selectTrainingExercises } from '../store/trainin
 export class NewTrainingComponent implements OnInit {
   newExercise: Exercise
   exercises$: Observable<Exercise[]>
-  currentExes$: Observable<Exercise[]>
+  newExes$: Observable<Exercise[]>
   constructor(private store: Store<any>) {
     this.exercises$ = this.store.select(selectTrainingExercises)
-    this.currentExes$ = this.store.select(selectCurrentTraining)
-  }
-
-  ngOnInit() {
+    this.newExes$ = this.store.select(selectNewTraining)
     this.store.dispatch(new Load())
   }
+
+  ngOnInit() {}
 
   add() {
     this.store.dispatch(new AddNewExercise(this.newExercise))
