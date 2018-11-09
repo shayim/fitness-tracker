@@ -1,13 +1,12 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core'
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material'
 import { Store } from '@ngrx/store'
-import { Observable } from 'rxjs'
 import { Exercise } from '../models/exercise'
 import { selectPastTraining } from '../store/training-reducer'
-import { MatSort } from '@angular/material'
 
 @Component({
   selector: 'app-past-training',
-  templateUrl: `past-training.component.html`,
+  templateUrl: `./past-training.component.html`,
   styles: [
     `
       table {
@@ -18,16 +17,30 @@ import { MatSort } from '@angular/material'
 })
 export class PastTrainingComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['name', 'duration', 'calories', 'status', 'date']
-  pastExercises$: Observable<Exercise[]>
+  pastData: MatTableDataSource<Exercise>
+  pageSize = 2
 
   @ViewChild(MatSort)
   sort: MatSort
 
-  constructor(private store: Store<any>) {
-    this.pastExercises$ = this.store.select(selectPastTraining)
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator
+
+  constructor(private store: Store<any>) {}
+
+  ngOnInit() {
+    this.store.select(selectPastTraining).subscribe(pastData => {
+      this.pastData = new MatTableDataSource(pastData)
+      this.pastData.paginator = this.paginator
+    })
   }
 
-  ngOnInit() {}
+  ngAfterViewInit() {
+    this.pastData.sort = this.sort
+    this.pastData.paginator = this.paginator
+  }
 
-  ngAfterViewInit() {}
+  filter(search: string) {
+    this.pastData.filter = search.trim().toLowerCase()
+  }
 }

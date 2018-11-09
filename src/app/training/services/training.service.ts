@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
+import { AngularFirestore } from 'angularfire2/firestore'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
 
 @Injectable({ providedIn: 'root' })
 export class TrainingService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private afs: AngularFirestore) {}
 
   getAllExercises(): Observable<Exercise[]> {
     return this.http.get('api/exercises').pipe(
@@ -42,5 +43,21 @@ export class TrainingService {
         return exercises
       })
     )
+  }
+
+  retrieveExercisesFromFirebase() {
+    return this.afs
+      .collection<any>('exercises')
+      .snapshotChanges()
+      .pipe(
+        map(results =>
+          results.map(result => {
+            const id = result.payload.doc.id
+            const exercise = result.payload.doc.data()
+
+            return { id, ...exercise } as Exercise
+          })
+        )
+      )
   }
 }
