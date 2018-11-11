@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { Actions, Effect, ofType } from '@ngrx/effects'
 import { Action, Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
 import { TrainingService } from '../services/training.service'
 import {
@@ -10,6 +10,9 @@ import {
   StartExercises,
   StopExercises,
   TrainingActionTypes,
+  CompletedExercise,
+  SaveFinished,
+  SaveFinishedSuccess,
 } from './training-actions'
 import { selectNewTraining } from './training-reducer'
 
@@ -37,13 +40,27 @@ export class TrainingEffects {
   )
 
   @Effect()
-  finished: Observable<Action> = this.actions.pipe(
+  completed: Observable<Action> = this.actions.pipe(
     ofType(TrainingActionTypes.Completed),
     map(() => {
-      if (this.news.length === 0) {
-        return new StopExercises(100)
+      if (this.news.length > 0) {
+        return new StartExercises()
+      } else {
+        return new SaveFinished()
       }
-      return new StartExercises()
     })
+  )
+
+  @Effect({ dispatch: true })
+  stopped: Observable<Action> = this.actions.pipe(
+    ofType(TrainingActionTypes.Stop),
+    map(() => new SaveFinished())
+  )
+
+  @Effect()
+  saveFinished: Observable<Action> = this.actions.pipe(
+    ofType(TrainingActionTypes.SaveFinished),
+    map(() => this.ts.saveFinishedExercisesToFirebase()),
+    map(ids => new SaveFinishedSuccess(ids))
   )
 }

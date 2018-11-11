@@ -10,6 +10,8 @@ export enum TrainingActionTypes {
   Load = '[Training] Load Exercises',
   LoadSuccess = '[Training] Load Exercises Sucess',
   LoadFailue = '[Training] Load Exercises Failure',
+  SaveFinished = '[Training] Save Finished Exercises',
+  SaveFinishedSuccess = '[Training] Save Finished Exercises Success',
 }
 
 export class AddNewExercise implements Action {
@@ -48,6 +50,15 @@ export class LoadFailue implements Action {
   readonly type = TrainingActionTypes.LoadFailue
 }
 
+export class SaveFinished implements Action {
+  readonly type = TrainingActionTypes.SaveFinished
+}
+
+export class SaveFinishedSuccess implements Action {
+  readonly type = TrainingActionTypes.SaveFinishedSuccess
+  constructor(public ids: string[]) {}
+}
+
 export type TrainingActions =
   | AddNewExercise
   | StartExercises
@@ -57,3 +68,5 @@ export type TrainingActions =
   | Load
   | LoadSuccess
   | LoadFailue
+  | SaveFinished
+  | SaveFinishedSuccess

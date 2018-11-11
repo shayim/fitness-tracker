@@ -6,6 +6,7 @@ export interface State {
   exercises: Exercise[]
   current: Exercise
   new: Exercise[]
+  finished: Exercise[]
   past: Exercise[]
   trainingStatus: boolean
 }
@@ -14,6 +15,7 @@ export const INITIAL_STATE: State = {
   exercises: [],
   current: undefined,
   new: [],
+  finished: [],
   past: [],
   trainingStatus: false,
 }
@@ -29,58 +31,71 @@ export const reducer = function(
         new: [...state.new, action.exercise],
         exercises: state.exercises.filter(e => e.id !== action.exercise.id),
       }
+
     case TrainingActionTypes.Start:
-      return {
+      const startState = {
         ...state,
-        current: { ...state.new[0] },
-        new: state.new.slice(1),
+        current: state.new.length > 0 ? { ...state.new[0] } : undefined,
+        new: state.new.length > 0 ? state.new.slice(1) : [],
         trainingStatus: true,
       }
+      return startState
+
     case TrainingActionTypes.Completed:
       return {
         ...state,
         current: undefined,
+        finished: [...state.finished, action.completedExercise],
         past: [...state.past, action.completedExercise],
         trainingStatus: false,
       }
+
     case TrainingActionTypes.Stop:
-      const newState: State = {
+      console.log('reach here')
+      const stopState: State = {
         ...state,
         trainingStatus: false,
         new: [],
         current: undefined,
       }
       if (state.current) {
-        newState.past = [
-          ...newState.past,
-          {
-            ...state.current,
-            state: 'cancelled',
-            duration: (state.current.duration * action.progress) / 100,
-            calories: (state.current.calories * action.progress) / 100,
-            date: new Date(),
-          },
-        ]
+        const currentExe = {
+          ...state.current,
+          state: 'cancelled',
+          duration: (state.current.duration * action.progress) / 100,
+          calories: (state.current.calories * action.progress) / 100,
+          date: new Date(),
+        } as Exercise
+        stopState.past = [...stopState.past, currentExe]
+        stopState.finished = [...stopState.finished, currentExe]
       }
       if (state.new.length > 0) {
-        newState.past = [
-          ...newState.past,
-          ...[...state.new].map(
-            e =>
-              ({
-                ...e,
-                calories: 0,
-                state: 'cancelled',
-              } as Exercise)
-          ),
-        ]
+        const news = state.new.map(
+          e =>
+            ({
+              ...e,
+              calories: 0,
+              duration: 0,
+              state: 'cancelled',
+              date: new Date(),
+            } as Exercise)
+        )
+        stopState.past = [...stopState.past, ...news]
+        stopState.finished = [...stopState.finished, ...news]
       }
-      return newState
-    case TrainingActionTypes.Pause:
+
+      return stopState
+
+    case TrainingActionTypes.SaveFinishedSuccess:
+      let finished = state.finished
+      if (action.ids.length > 0) {
+        action.ids.forEach(id => (finished = finished.filter(e => e.id !== id)))
+      }
       return {
         ...state,
-        trainingStatus: false,
+        finished: finished,
       }
+
     case TrainingActionTypes.LoadSuccess:
       return {
         ...state,
@@ -107,6 +122,12 @@ export const selectNewTraining = createSelector(
   selectTrainingState,
   (state: State) => state.new
 )
+
+export const selectFinishedTraining = createSelector(
+  selectTrainingState,
+  (state: State) => state.finished
+)
+
 export const selectPastTraining = createSelector(
   selectTrainingState,
   (state: State) => state.past

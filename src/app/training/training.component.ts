@@ -8,24 +8,28 @@ import { selectTrainingStatus, selectCurrentTraining } from './store/training-re
 @Component({
   selector: 'app-training',
   template: `
-  <nav mat-tab-nav-bar>
-      <a mat-tab-link [disabled]="trainingStatus$|async"
-     *ngFor="let link of navLinks"
-     [routerLink]="link.path"
-     routerLinkActive #rla="routerLinkActive"
-     [active]="rla.isActive">
-    {{link.label}}
-  </a>
-  </nav>
-  <router-outlet *ngIf="!(trainingStatus$|async)"></router-outlet>
+    <nav mat-tab-nav-bar>
+      <a
+        mat-tab-link
+        [disabled]="trainingStatus$ | async"
+        *ngFor="let link of navLinks"
+        [routerLink]="link.path"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive"
+      >
+        {{ link.label }}
+      </a>
+    </nav>
+    <router-outlet *ngIf="!(trainingStatus$ | async)"></router-outlet>
 
-  <app-current-training
-    [currentExes]="currentExes$|async"
-    *ngIf="trainingStatus$|async"
-    (stopped)="onStopped($event)"
-    (completed)="onCompleted($event)">
-  </app-current-training>
-
+    <app-current-training
+      [currentExes]="currentExes$ | async"
+      *ngIf="(trainingStatus$ | async)"
+      (stopped)="onStopped($event)"
+      (completed)="onCompleted($event)"
+    >
+    </app-current-training>
   `,
   styles: [
     `
@@ -54,10 +58,16 @@ export class TrainingComponent implements OnInit {
   }
 
   onStopped(progress: number) {
+    console.log(progress)
     this.store.dispatch(new StopExercises(progress))
   }
 
   onCompleted(exercise: Exercise) {
-    this.store.dispatch(new CompletedExercise(exercise))
+    const completedExercise: Exercise = {
+      ...exercise,
+      state: 'completed',
+      date: new Date(),
+    }
+    this.store.dispatch(new CompletedExercise(completedExercise))
   }
 }

@@ -1,13 +1,24 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { AngularFirestore } from 'angularfire2/firestore'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable, of, from } from 'rxjs'
+import { map, mergeMap } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
+import { Store, Action } from '@ngrx/store'
+import { selectFinishedTraining } from '../store/training-reducer'
 
 @Injectable({ providedIn: 'root' })
 export class TrainingService {
-  constructor(private http: HttpClient, private afs: AngularFirestore) {}
+  finished: Exercise[]
+  constructor(
+    private http: HttpClient,
+    private afs: AngularFirestore,
+    private store: Store<any>
+  ) {
+    this.store
+      .select(selectFinishedTraining)
+      .subscribe(finished => (this.finished = finished))
+  }
 
   getAllExercises(): Observable<Exercise[]> {
     return this.http.get('api/exercises').pipe(
@@ -43,6 +54,19 @@ export class TrainingService {
         return exercises
       })
     )
+  }
+
+  saveFinishedExercisesToFirebase(): string[] {
+    const ids = []
+    this.finished.forEach(exercise => {
+      ids.push(exercise.id)
+      this.afs
+        .collection('finished')
+        .add(exercise)
+        .catch(err => console.log(err))
+    })
+
+    return ids
   }
 
   retrieveExercisesFromFirebase() {

@@ -29,7 +29,6 @@ export class NewTrainingComponent implements OnInit {
   ngOnInit() {}
 
   add() {
-    console.log(this.newExercise)
     this.store.dispatch(new AddNewExercise(this.newExercise))
   }
 
