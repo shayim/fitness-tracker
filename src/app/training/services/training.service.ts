@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { AngularFirestore } from 'angularfire2/firestore'
-import { Observable, of, from } from 'rxjs'
-import { map, mergeMap } from 'rxjs/operators'
+import { Observable, zip } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
-import { Store, Action } from '@ngrx/store'
 import { selectFinishedTraining } from '../store/training-reducer'
 
 @Injectable({ providedIn: 'root' })
@@ -60,28 +60,32 @@ export class TrainingService {
     const ids = []
     this.finished.forEach(exercise => {
       ids.push(exercise.id)
-      this.afs
-        .collection('finished')
-        .add(exercise)
-        .catch(err => console.log(err))
+      this.afs.collection('past').add(exercise)
     })
 
     return ids
   }
 
   retrieveExercisesFromFirebase() {
-    return this.afs
-      .collection<any>('exercises')
-      .snapshotChanges()
-      .pipe(
-        map(results =>
-          results.map(result => {
-            const id = result.payload.doc.id
-            const exercise = result.payload.doc.data()
+    return zip(
+      this.afs.collection<any>('exercises').snapshotChanges(),
+      this.afs
+        .collection<any>('past')
+        .valueChanges()
+        .pipe(map(exes => exes.map(e => ({ ...e, date: e.date.toDate() }))))
+    ).pipe(
+      map(results => {
+        const exercises = results[0].map(result => {
+          const id = result.payload.doc.id
+          const exercise = result.payload.doc.data()
 
-            return { id, ...exercise } as Exercise
-          })
-        )
-      )
+          return { id, ...exercise } as Exercise
+        })
+
+        const past = results[1] as Exercise[]
+
+        return { exercises, past }
+      })
+    )
   }
 }

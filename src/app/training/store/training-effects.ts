@@ -2,17 +2,15 @@ import { Injectable } from '@angular/core'
 import { Actions, Effect, ofType } from '@ngrx/effects'
 import { Action, Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
 import { TrainingService } from '../services/training.service'
 import {
   LoadSuccess,
-  StartExercises,
-  StopExercises,
-  TrainingActionTypes,
-  CompletedExercise,
   SaveFinished,
   SaveFinishedSuccess,
+  StartExercises,
+  TrainingActionTypes,
 } from './training-actions'
 import { selectNewTraining } from './training-reducer'
 
@@ -32,8 +30,8 @@ export class TrainingEffects {
     ofType(TrainingActionTypes.Load),
     switchMap(() =>
       this.ts.retrieveExercisesFromFirebase().pipe(
-        map(exes => {
-          return new LoadSuccess(exes)
+        map(results => {
+          return new LoadSuccess(results)
         })
       )
     )

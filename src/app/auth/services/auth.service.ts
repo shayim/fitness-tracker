@@ -79,6 +79,7 @@ export class AuthService {
           localStorage.removeItem(this.localStorageUserKey)
         }
       } catch (error) {
+        // TODO
         console.log(error)
         localStorage.removeItem(this.localStorageUserKey)
         return null

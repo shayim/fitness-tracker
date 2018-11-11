@@ -43,7 +43,7 @@ export class Load implements Action {
 
 export class LoadSuccess implements Action {
   readonly type = TrainingActionTypes.LoadSuccess
-  constructor(public exercises: Exercise[]) {}
+  constructor(public results: { exercises: Exercise[]; past: Exercise[] }) {}
 }
 
 export class LoadFailue implements Action {

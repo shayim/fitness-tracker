@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
 import { Exercise } from './models/exercise'
 import { CompletedExercise, StopExercises } from './store/training-actions'
-import { selectTrainingStatus, selectCurrentTraining } from './store/training-reducer'
+import { selectCurrentTraining, selectTrainingStatus } from './store/training-reducer'
 
 @Component({
   selector: 'app-training',
@@ -58,7 +58,6 @@ export class TrainingComponent implements OnInit {
   }
 
   onStopped(progress: number) {
-    console.log(progress)
     this.store.dispatch(new StopExercises(progress))
   }
 
