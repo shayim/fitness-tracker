@@ -1,7 +1,8 @@
+import { AngularFireAuth } from 'angularfire2/auth'
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable, of, from } from 'rxjs'
+import { mergeMap, map, catchError } from 'rxjs/operators'
 import { User } from '../models/user.model'
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +18,7 @@ export class AuthService {
 
   // private _user: User
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private afa: AngularFireAuth) {}
 
   login(email: string, password: string): Observable<any> {
     if (this.user) {
@@ -34,6 +35,7 @@ export class AuthService {
       })
     )
   }
+
   signup(email: string, password: string, birthdate: Date) {
     return this.http.post('api/users/signup', { email, password, birthdate }).pipe(
       map(user => {
@@ -46,14 +48,74 @@ export class AuthService {
     )
   }
 
+  loginByAngularFireAuth(email: string, password: string) {
+    if (this.user) {
+      return of(this.user)
+    }
+    let userId = ''
+    return from(this.afa.auth.signInWithEmailAndPassword(email, password)).pipe(
+      map(loginResult => {
+        userId = loginResult.user.uid
+        return from(loginResult.user.getIdTokenResult(true))
+      }),
+      mergeMap(result => result),
+      map(result => {
+        const expiredAt = new Date(result.expirationTime).setMilliseconds(0)
+        const user: User = {
+          email: email,
+          userId: userId,
+          token: result.token,
+          expiredAt: expiredAt,
+        }
+        this.validateAndSave(user)
+        return user
+      }),
+
+      catchError(error => {
+        // TODO error handling
+        console.log(error)
+        throw error
+      })
+    )
+  }
+
+  signupByAngularFireAuth(email: string, password: string, birthdate: Date) {
+    let userId = ''
+    return from(this.afa.auth.createUserWithEmailAndPassword(email, password)).pipe(
+      map(signupResult => {
+        userId = signupResult.user.uid
+        return from(signupResult.user.getIdTokenResult(true))
+      }),
+      mergeMap(result => result),
+      map(result => {
+        const expiredAt = new Date(result.expirationTime).setMilliseconds(0)
+        const user: User = {
+          email: email,
+          userId: userId,
+          token: result.token,
+          expiredAt: expiredAt,
+        }
+        this.validateAndSave(user)
+        return user
+      }),
+
+      catchError(error => {
+        // TODO error handling
+        console.log(error)
+        throw error
+      })
+    )
+  }
+
   logout() {
+    this.afa.auth.signOut()
     localStorage.removeItem(this.localStorageUserKey)
   }
 
   checkUniqueEmail(email: string): Observable<boolean> {
     /// TODO setup backend
     const rand = Math.floor(Math.random() * 5)
-    if (rand < 1) {
+    if (rand < 0) {
       return of(false)
     }
     return of(true)

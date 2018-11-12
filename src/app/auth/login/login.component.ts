@@ -1,8 +1,9 @@
+import { AuthService } from './../services/auth.service'
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { map } from 'rxjs/operators'
 import { Store } from '@ngrx/store'
-import { Login } from '../store/auth-actions'
+import { Login, Signup } from '../store/auth-actions'
 
 @Component({
   templateUrl: `./login.component.html`,
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private store: Store<any>,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth: AuthService
   ) {}
 
   ngOnInit() {
@@ -26,10 +28,12 @@ export class LoginComponent implements OnInit {
 
   login(inputs) {
     if (this.isSignup) {
-      // this.auth.signup(inputs.email, inputs.password, inputs.birthdate.toDate())
+      this.store.dispatch(
+        new Signup(inputs.email, inputs.password, inputs.birthdate.toDate())
+      )
+    } else {
+      this.store.dispatch(new Login(inputs.email, inputs.password))
     }
-
-    this.store.dispatch(new Login(inputs.email, inputs.password))
   }
 
   toggle() {

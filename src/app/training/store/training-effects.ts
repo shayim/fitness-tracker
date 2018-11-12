@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Actions, Effect, ofType } from '@ngrx/effects'
 import { Action, Store } from '@ngrx/store'
-import { Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { map, switchMap, catchError } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
 import { TrainingService } from '../services/training.service'
 import {
@@ -11,6 +11,7 @@ import {
   SaveFinishedSuccess,
   StartExercises,
   TrainingActionTypes,
+  LoadFailue,
 } from './training-actions'
 import { selectNewTraining } from './training-reducer'
 
@@ -32,6 +33,10 @@ export class TrainingEffects {
       this.ts.retrieveExercisesFromFirebase().pipe(
         map(results => {
           return new LoadSuccess(results)
+        }),
+        catchError(error => {
+          console.log('authorized error????', error)
+          return of(new LoadFailue())
         })
       )
     )
