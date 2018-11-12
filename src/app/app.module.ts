@@ -1,3 +1,4 @@
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -10,10 +11,11 @@ import { environment } from './../environments/environment'
 import { AppComponent } from './app.component'
 import { AuthModule } from './auth/auth.module'
 import { HomeModule } from './home/home.module'
+import { LoadingStatusInterceptor } from './loading-status.interceptor'
+import { reducer } from './loading-status.reducer'
 import { AppRoutingModule } from './shared/app-routing.module'
 import { MatModule } from './shared/mat.module'
 import { TrainingModule } from './training/training.module'
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -25,7 +27,7 @@ import { TrainingModule } from './training/training.module'
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot({}),
+    StoreModule.forRoot({ loading: reducer }),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
@@ -34,7 +36,9 @@ import { TrainingModule } from './training/training.module'
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingStatusInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

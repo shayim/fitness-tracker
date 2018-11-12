@@ -3,7 +3,7 @@ import { Router } from '@angular/router'
 import { Actions, Effect, ofType } from '@ngrx/effects'
 import { Action } from '@ngrx/store'
 import { Observable, of } from 'rxjs'
-import { catchError, map, switchMap, tap, filter } from 'rxjs/operators'
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators'
 import { User } from '../models/user.model'
 import { AuthService } from '../services/auth.service'
 import {

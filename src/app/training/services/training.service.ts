@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Store } from '@ngrx/store'
 import { AngularFirestore } from 'angularfire2/firestore'
-import { Observable, zip } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { zip } from 'rxjs'
+import { map, tap } from 'rxjs/operators'
+import { Loaded, Loading } from 'src/app/loading-status.reducer'
 import { Exercise } from '../models/exercise'
 import { selectFinishedTraining } from '../store/training-reducer'
 
@@ -20,41 +21,41 @@ export class TrainingService {
       .subscribe(finished => (this.finished = finished))
   }
 
-  getAllExercises(): Observable<Exercise[]> {
-    return this.http.get('api/exercises').pipe(
-      map(exes => {
-        // TODO hook up backend
+  // getAllExercises(): Observable<Exercise[]> {
+  //   return this.http.get('api/exercises').pipe(
+  //     map(exes => {
+  //       // TODO hook up backend
 
-        const exercises: Exercise[] = [
-          {
-            id: Math.floor(Math.random() * 10000000).toString(),
-            name: 'Crunches',
-            duration: 60,
-            calories: 100,
-          },
-          {
-            id: Math.floor(Math.random() * 10000000).toString(),
-            name: 'Touch Toes',
-            duration: 60,
-            calories: 220,
-          },
-          {
-            id: Math.floor(Math.random() * 10000000).toString(),
-            name: 'Side Lunges',
-            duration: 30,
-            calories: 60,
-          },
-          {
-            id: Math.floor(Math.random() * 10000000).toString(),
-            name: 'Burpees',
-            duration: 30,
-            calories: 50,
-          },
-        ]
-        return exercises
-      })
-    )
-  }
+  //       const exercises: Exercise[] = [
+  //         {
+  //           id: Math.floor(Math.random() * 10000000).toString(),
+  //           name: 'Crunches',
+  //           duration: 60,
+  //           calories: 100,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000000).toString(),
+  //           name: 'Touch Toes',
+  //           duration: 60,
+  //           calories: 220,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000000).toString(),
+  //           name: 'Side Lunges',
+  //           duration: 30,
+  //           calories: 60,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000000).toString(),
+  //           name: 'Burpees',
+  //           duration: 30,
+  //           calories: 50,
+  //         },
+  //       ]
+  //       return exercises
+  //     })
+  //   )
+  // }
 
   saveFinishedExercisesToFirebase(): string[] {
     const ids = []
@@ -67,6 +68,8 @@ export class TrainingService {
   }
 
   retrieveExercisesFromFirebase() {
+    this.store.dispatch(new Loading())
+
     return zip(
       this.afs.collection<any>('exercises').snapshotChanges(),
       this.afs
@@ -74,6 +77,7 @@ export class TrainingService {
         .valueChanges()
         .pipe(map(exes => exes.map(e => ({ ...e, date: e.date.toDate() }))))
     ).pipe(
+      tap(() => this.store.dispatch(new Loaded())),
       map(results => {
         const exercises = results[0].map(result => {
           const id = result.payload.doc.id

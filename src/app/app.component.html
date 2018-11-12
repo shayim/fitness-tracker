@@ -1,11 +1,18 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
-    <app-sidenav (loggedout)="logout()" (toggleSidenav)="sidenav.close()" [user]="user$|async"></app-sidenav>
+    <app-sidenav
+      (loggedout)="logout()"
+      (toggleSidenav)="sidenav.close()"
+      [user]="user$ | async"
+    ></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-header (loggedout)="logout()" (toggleSidenav)=sidenav.toggle() [user]="user$|async"></app-header>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
+    <app-header
+      (loggedout)="logout()"
+      (toggleSidenav)="sidenav.toggle()"
+      [user]="user$ | async"
+    ></app-header>
+    <main><router-outlet></router-outlet></main>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<mat-spinner *ngIf="loadingStatus"></mat-spinner>
