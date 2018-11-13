@@ -1,13 +1,11 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
 
-import { LoginComponent } from '../auth/login/login.component'
 import { WelcomeComponent } from '../home/welcome/welcome.component'
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: LoginComponent },
+  { path: 'training', loadChildren: '../training/training.module#TrainingModule' },
 ]
 
 @NgModule({

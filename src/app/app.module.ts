@@ -15,12 +15,11 @@ import { LoadingStatusInterceptor } from './loading-status.interceptor'
 import { reducer } from './loading-status.reducer'
 import { AppRoutingModule } from './shared/app-routing.module'
 import { MatModule } from './shared/mat.module'
-import { TrainingModule } from './training/training.module'
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
     HomeModule,
-    TrainingModule,
     AuthModule,
     MatModule,
 
