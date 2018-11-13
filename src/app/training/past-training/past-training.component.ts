@@ -3,6 +3,7 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material'
 import { Store } from '@ngrx/store'
 import { Exercise } from '../models/exercise'
 import { selectPastTraining } from '../store/training-reducer'
+import { LoadPast } from '../store/training-actions'
 
 @Component({
   selector: 'app-past-training',
@@ -18,7 +19,7 @@ import { selectPastTraining } from '../store/training-reducer'
 export class PastTrainingComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['name', 'duration', 'calories', 'status', 'date']
   pastData: MatTableDataSource<Exercise>
-  pageSize = 2
+  pageSize = 10
 
   @ViewChild(MatSort)
   sort: MatSort
@@ -29,6 +30,7 @@ export class PastTrainingComponent implements OnInit, AfterViewInit {
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadPast())
     this.store.select(selectPastTraining).subscribe(pastData => {
       this.pastData = new MatTableDataSource(pastData)
       this.pastData.paginator = this.paginator

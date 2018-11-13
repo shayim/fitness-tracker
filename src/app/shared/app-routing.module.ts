@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router'
 
 import { LoginComponent } from '../auth/login/login.component'
 import { WelcomeComponent } from '../home/welcome/welcome.component'
-import { TrainingComponent } from './../training/training.component'
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },

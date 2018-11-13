@@ -12,47 +12,11 @@ import { User } from '../models/user.model'
 export class AuthService {
   private localStorageUserKey = '_user'
 
-  // private mockUser = {
-  //   email: 'a@a',
-  //   userId: Math.round(Math.random() * 10000000).toString(),
-  //   token: 'eyabcdefgh',
-  //   expiredAt: new Date().setMinutes(new Date().getMinutes() + 30),
-  // }
-
   constructor(
     private http: HttpClient,
     private afa: AngularFireAuth,
-    private snackBar: MatSnackBar,
     private store: Store<any>
   ) {}
-
-  // login(email: string, password: string): Observable<any> {
-  //   if (this.user) {
-  //     return of(this.user)
-  //   }
-
-  //   return this.http.post('api/users/login', { email, password }).pipe(
-  //     map(user => {
-  //       // TODO: hook up backend
-
-  //       this.validateAndSave(this.mockUser)
-
-  //       return this.mockUser
-  //     })
-  //   )
-  // }
-
-  // signup(email: string, password: string, birthdate: Date) {
-  //   return this.http.post('api/users/signup', { email, password, birthdate }).pipe(
-  //     map(user => {
-  //       // TODO: hook up backend
-
-  //       this.validateAndSave(this.mockUser)
-
-  //       return this.mockUser
-  //     })
-  //   )
-  // }
 
   loginByAngularFireAuth(email: string, password: string) {
     if (this.user) {
@@ -80,11 +44,9 @@ export class AuthService {
       }),
 
       catchError(error => {
+        this.store.dispatch(new Loaded())
         // TODO error handling
         console.log(error)
-        this.snackBar.open(error.message, null, {
-          duration: 5000,
-        })
         throw error
       })
     )
@@ -113,9 +75,9 @@ export class AuthService {
       }),
 
       catchError(error => {
+        this.store.dispatch(new Loaded())
         // TODO error handling
         console.log(error)
-        this.snackBar.open(error.message, null, { duration: 5000 })
         throw error
       })
     )

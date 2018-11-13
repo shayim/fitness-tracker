@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { RouterModule } from '@angular/router'
+// import { RouterModule } from '@angular/router'
 import { EffectsModule } from '@ngrx/effects'
 import { StoreModule } from '@ngrx/store'
 import { AngularFireAuthModule } from 'angularfire2/auth'
@@ -18,7 +18,7 @@ import { reducer as authReducer } from './store/auth-reducer'
     FormsModule,
     StoreModule.forFeature('auth', authReducer),
     EffectsModule.forFeature([AuthEffects]),
-    RouterModule,
+    // RouterModule,
     AngularFireAuthModule,
     MatModule,
     MyCommonModule,

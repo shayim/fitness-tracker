@@ -7,11 +7,15 @@ export enum TrainingActionTypes {
   Completed = '[Training] Completed Exercises',
   Stop = '[Training] Stop Exercises',
   Pause = '[Training] Pause Exercises',
-  Load = '[Training] Load Exercises',
-  LoadSuccess = '[Training] Load Exercises Sucess',
-  LoadFailue = '[Training] Load Exercises Failure',
+  LoadSelections = '[Training] Load Exercise Selections',
+  LoadSelectionsSuccess = '[Training] Load Exercise Selections Sucess',
+  LoadSelectionsFailure = '[Training] Load Exercises Failure',
   SaveFinished = '[Training] Save Finished Exercises',
   SaveFinishedSuccess = '[Training] Save Finished Exercises Success',
+  SaveFinishedFailure = '[Training] Save Finished Exercises Failure',
+  LoadPast = '[Training] Load Past Exercises',
+  LoadPastSuccess = '[Training] Load Past Exercises Success',
+  LoadPastFailure = '[Training] Load Past Exercises Failure',
 }
 
 export class AddNewExercise implements Action {
@@ -37,17 +41,18 @@ export class PauseExercises implements Action {
   readonly type = TrainingActionTypes.Pause
 }
 
-export class Load implements Action {
-  readonly type = TrainingActionTypes.Load
+export class LoadSelections implements Action {
+  readonly type = TrainingActionTypes.LoadSelections
 }
 
-export class LoadSuccess implements Action {
-  readonly type = TrainingActionTypes.LoadSuccess
-  constructor(public results: { exercises: Exercise[]; past: Exercise[] }) {}
+export class LoadSelectionsSuccess implements Action {
+  readonly type = TrainingActionTypes.LoadSelectionsSuccess
+  constructor(public selections: Exercise[]) {}
 }
 
-export class LoadFailue implements Action {
-  readonly type = TrainingActionTypes.LoadFailue
+export class LoadSelectionsFailure implements Action {
+  readonly type = TrainingActionTypes.LoadSelectionsFailure
+  constructor(public error: any) {}
 }
 
 export class SaveFinished implements Action {
@@ -59,14 +64,36 @@ export class SaveFinishedSuccess implements Action {
   constructor(public ids: string[]) {}
 }
 
+export class SaveFinishedFailure implements Action {
+  readonly type = TrainingActionTypes.SaveFinishedFailure
+  constructor(public error: any) {}
+}
+
+export class LoadPast implements Action {
+  readonly type = TrainingActionTypes.LoadPast
+}
+
+export class LoadPastSuccess implements Action {
+  readonly type = TrainingActionTypes.LoadPastSuccess
+  constructor(public pastExercises: Exercise[]) {}
+}
+
+export class LoadPastFailure implements Action {
+  readonly type = TrainingActionTypes.LoadPastFailure
+  constructor(public error: any) {}
+}
+
 export type TrainingActions =
   | AddNewExercise
   | StartExercises
   | CompletedExercise
   | StopExercises
   | PauseExercises
-  | Load
-  | LoadSuccess
-  | LoadFailue
+  | LoadSelections
+  | LoadSelectionsSuccess
+  | LoadSelectionsFailure
   | SaveFinished
   | SaveFinishedSuccess
+  | LoadPast
+  | LoadPastSuccess
+  | LoadPastFailure

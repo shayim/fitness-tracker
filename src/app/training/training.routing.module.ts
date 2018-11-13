@@ -11,7 +11,6 @@ const routes: Routes = [
     path: 'training',
     component: TrainingComponent,
     canActivate: [AuthGuard],
-    // canActivateChild: [AuthGuard],
     children: [
       { path: '', redirectTo: 'new', pathMatch: 'full' },
       { path: 'past', component: PastTrainingComponent },

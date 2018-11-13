@@ -5,6 +5,7 @@ export enum AuthActionTypes {
   GetAuthSuccess = '[Auth] Get Auth Success',
   Signup = '[Auth] Signup',
   SignupSuccess = '[Auth] Signup Success',
+  SignupFailure = '[Auth] Signup Failure',
   Login = '[Auth] Login',
   LoginSuccess = '[Auth] Login Success',
   LoginFailure = '[Auth] Login Failure',
@@ -30,6 +31,11 @@ export class SignupSuccess implements Action {
   ) {}
 }
 
+export class SignupFailure implements Action {
+  readonly type = AuthActionTypes.SignupFailure
+  constructor(public error: any) {}
+}
+
 export class Login implements Action {
   readonly type = AuthActionTypes.Login
   constructor(public email: string, public password: string) {}
@@ -47,10 +53,19 @@ export class LoginSuccess implements Action {
 
 export class LoginFailure implements Action {
   readonly type = AuthActionTypes.LoginFailure
+  constructor(public error: any) {}
 }
 
 export class Logout implements Action {
   readonly type = AuthActionTypes.Logout
 }
 
-export type AuthActions = Signup | SignupSuccess | Login | Logout | LoginSuccess | GetAuth
+export type AuthActions =
+  | Signup
+  | SignupSuccess
+  | SignupFailure
+  | Login
+  | LoginSuccess
+  | LoginFailure
+  | Logout
+  | GetAuth

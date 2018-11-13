@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
         <mat-icon>dashboard</mat-icon>
       </button>
 
-      <div fxFlex fxLayoutAlign.xs="end"><a routerLink="/">LOGO</a></div>
+      <div fxFlex fxLayoutAlign.xs="end"><a routerLink="/">NG Fitness</a></div>
       <ul fxHide.lt-sm fxFlex fxLayout fxLayoutAlign="end" fxLayoutGap="10%">
         <li *ngIf="!user">
           <a routerLink="/signup" routerLinkActive="active">Sign up</a>

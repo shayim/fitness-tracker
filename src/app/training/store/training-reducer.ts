@@ -46,7 +46,6 @@ export const reducer = function(
         ...state,
         current: undefined,
         finished: [...state.finished, action.completedExercise],
-        // past: [...state.past, action.completedExercise],
         trainingStatus: false,
       }
 
@@ -65,7 +64,6 @@ export const reducer = function(
           calories: (state.current.calories * action.progress) / 100,
           date: new Date(),
         } as Exercise
-        // stopState.past = [...stopState.past, currentExe]
         stopState.finished = [...stopState.finished, currentExe]
       }
       if (state.new.length > 0) {
@@ -95,11 +93,16 @@ export const reducer = function(
         finished: finished,
       }
 
-    case TrainingActionTypes.LoadSuccess:
+    case TrainingActionTypes.LoadSelectionsSuccess:
       return {
         ...state,
-        exercises: [...action.results.exercises],
-        past: [...action.results.past],
+        exercises: [...action.selections],
+      }
+
+    case TrainingActionTypes.LoadPastSuccess:
+      return {
+        ...state,
+        past: [...action.pastExercises],
       }
     default:
       return state

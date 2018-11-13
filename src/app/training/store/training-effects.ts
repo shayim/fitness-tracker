@@ -2,18 +2,22 @@ import { Injectable } from '@angular/core'
 import { Actions, Effect, ofType } from '@ngrx/effects'
 import { Action, Store } from '@ngrx/store'
 import { Observable, of } from 'rxjs'
-import { map, switchMap, catchError } from 'rxjs/operators'
+import { map, switchMap, catchError, tap } from 'rxjs/operators'
 import { Exercise } from '../models/exercise'
 import { TrainingService } from '../services/training.service'
 import {
-  LoadSuccess,
+  LoadSelectionsSuccess,
   SaveFinished,
   SaveFinishedSuccess,
   StartExercises,
   TrainingActionTypes,
-  LoadFailue,
+  LoadSelectionsFailure,
+  SaveFinishedFailure,
+  LoadPastSuccess,
+  LoadPastFailure,
 } from './training-actions'
 import { selectNewTraining } from './training-reducer'
+import { MatSnackBar } from '@angular/material'
 
 @Injectable()
 export class TrainingEffects {
@@ -21,23 +25,19 @@ export class TrainingEffects {
   constructor(
     private ts: TrainingService,
     private actions: Actions,
-    private store: Store<any>
+    private store: Store<any>,
+    private snackBar: MatSnackBar
   ) {
     this.store.select(selectNewTraining).subscribe(news => (this.news = news))
   }
 
   @Effect()
   load$: Observable<Action> = this.actions.pipe(
-    ofType(TrainingActionTypes.Load),
+    ofType(TrainingActionTypes.LoadSelections),
     switchMap(() =>
-      this.ts.retrieveExercisesFromFirebase().pipe(
-        map(results => {
-          return new LoadSuccess(results)
-        }),
-        catchError(error => {
-          console.log('authorized error????', error)
-          return of(new LoadFailue())
-        })
+      this.ts.retrieveExerciseSelectionFromFirebase().pipe(
+        map(results => new LoadSelectionsSuccess(results)),
+        catchError(error => of(new LoadSelectionsFailure(error)))
       )
     )
   )
@@ -63,7 +63,28 @@ export class TrainingEffects {
   @Effect()
   saveFinished: Observable<Action> = this.actions.pipe(
     ofType(TrainingActionTypes.SaveFinished),
-    map(() => this.ts.saveFinishedExercisesToFirebase()),
-    map(ids => new SaveFinishedSuccess(ids))
+    switchMap(() => this.ts.saveFinishedExercisesToFirebase()),
+    map(ids => new SaveFinishedSuccess(ids)),
+    catchError(error => of(new SaveFinishedFailure(error)))
+  )
+
+  @Effect()
+  loadPast$: Observable<Action> = this.actions.pipe(
+    ofType(TrainingActionTypes.LoadPast),
+    switchMap(() => this.ts.retrievePastExercisesFromFirebase()),
+    map(exes => new LoadPastSuccess(exes)),
+    catchError(error => of(new LoadPastFailure(error)))
+  )
+
+  @Effect({ dispatch: false })
+  failure$ = this.actions.pipe(
+    ofType(
+      TrainingActionTypes.LoadSelectionsFailure,
+      TrainingActionTypes.SaveFinishedFailure,
+      TrainingActionTypes.LoadPastFailure
+    ),
+    tap((action: any) => {
+      this.snackBar.open(action.error.message, null, { duration: 5000 })
+    })
   )
 }

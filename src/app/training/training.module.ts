@@ -1,21 +1,19 @@
+import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
-import { NgModule } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { EffectsModule } from '@ngrx/effects'
-import { ActionReducerMap, StoreModule } from '@ngrx/store'
+import { StoreModule } from '@ngrx/store'
 import { MatModule } from './../shared/mat.module'
+import { TrainingRoutingModule } from './training.routing.module'
+
 import { CurrentTrainingComponent } from './current-training/current-training.component'
 import { NewTrainingComponent } from './new-training/new-training.component'
 import { PastTrainingComponent } from './past-training/past-training.component'
+import { TrainingComponent } from './training.component'
+
 import { TrainingEffects } from './store/training-effects'
 import { reducer as TrainingReducer } from './store/training-reducer'
-import { TrainingComponent } from './training.component'
-import { TrainingRoutingModule } from './training.routing.module'
-import { FormsModule } from '@angular/forms'
-
-const reducers: ActionReducerMap<any> = {
-  training: TrainingReducer,
-}
 
 @NgModule({
   declarations: [

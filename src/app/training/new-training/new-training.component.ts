@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Store } from '@ngrx/store'
 import { Observable } from 'rxjs'
 import { Exercise } from '../models/exercise'
-import { AddNewExercise, Load, StartExercises } from '../store/training-actions'
+import { AddNewExercise, LoadSelections, StartExercises } from '../store/training-actions'
 import { selectNewTraining, selectTrainingExercises } from '../store/training-reducer'
 
 @Component({
@@ -23,7 +23,7 @@ export class NewTrainingComponent implements OnInit {
   constructor(private store: Store<any>) {
     this.exercises$ = this.store.select(selectTrainingExercises)
     this.newExes$ = this.store.select(selectNewTraining)
-    this.store.dispatch(new Load())
+    this.store.dispatch(new LoadSelections())
   }
 
   ngOnInit() {}

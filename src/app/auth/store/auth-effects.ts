@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { Actions, Effect, ofType } from '@ngrx/effects'
@@ -12,6 +13,7 @@ import {
   LoginFailure,
   LoginSuccess,
   Signup,
+  SignupFailure,
 } from './auth-actions'
 
 @Injectable()
@@ -19,7 +21,8 @@ export class AuthEffects {
   constructor(
     private auth: AuthService,
     private actions$: Actions,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   @Effect()
@@ -44,11 +47,7 @@ export class AuthEffects {
             this.router.navigate(['/training'])
             return new LoginSuccess(user.email, user.userId, user.token, user.expiredAt)
           }),
-          catchError(error => {
-            // TODO error handling
-            console.log(error)
-            return of(new LoginFailure())
-          })
+          catchError(error => of(new SignupFailure(error)))
         )
     )
   )
@@ -62,11 +61,7 @@ export class AuthEffects {
           this.router.navigate(['/training'])
           return new LoginSuccess(user.email, user.userId, user.token, user.expiredAt)
         }),
-        catchError(error => {
-          // TODO error handling
-          console.log(error)
-          return of(new LoginFailure())
-        })
+        catchError(error => of(new LoginFailure(error)))
       )
     )
   )
@@ -78,5 +73,13 @@ export class AuthEffects {
       this.auth.logout()
       this.router.navigate(['/'])
     })
+  )
+
+  @Effect({ dispatch: false })
+  failure$ = this.actions$.pipe(
+    ofType(AuthActionTypes.LoginFailure, AuthActionTypes.SignupFailure),
+    tap((action: any) =>
+      this.snackBar.open(action.error.message, null, { duration: 5000 })
+    )
   )
 }
