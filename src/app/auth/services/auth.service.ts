@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { MatSnackBar } from '@angular/material'
 import { Store } from '@ngrx/store'
 import { AngularFireAuth } from 'angularfire2/auth'
 import { from, Observable, of } from 'rxjs'

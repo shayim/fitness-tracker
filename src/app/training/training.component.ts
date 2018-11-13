@@ -52,7 +52,6 @@ export class TrainingComponent implements OnInit {
   ngOnInit() {
     this.navLinks = [
       { path: '/training/new', label: 'New' },
-      // { path: '/training/current', label: 'Current' },
       { path: '/training/past', label: 'Past' },
     ]
   }

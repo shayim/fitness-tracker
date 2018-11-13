@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { selectUser } from './../store/auth-reducer'
 
